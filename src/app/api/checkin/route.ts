@@ -3,14 +3,30 @@ import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import path from 'path';
 
+let db: any = null;
+
 // Reuse the database connection function
 async function getDb() {
+  if (db) return db;
+  
   const dbPath = path.join(process.cwd(), 'event.db');
   
-  const db = await open({
+  db = await open({
     filename: dbPath,
     driver: sqlite3.Database
   });
+  
+  // Create table if it doesn't exist
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS attendees (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      token TEXT UNIQUE NOT NULL,
+      checkedIn INTEGER DEFAULT 0,
+      registeredAt DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
   
   return db;
 }
