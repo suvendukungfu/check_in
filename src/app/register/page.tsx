@@ -6,6 +6,9 @@ import Link from 'next/link';
 export default function RegisterPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [gender, setGender] = useState('');
+  const [year, setYear] = useState('');
+  const [batch, setBatch] = useState('');
   const [registered, setRegistered] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -21,7 +24,13 @@ export default function RegisterPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, email }),
+        body: JSON.stringify({ 
+          name, 
+          email, 
+          gender, 
+          year: parseInt(year), 
+          batch 
+        }),
       });
       
       if (response.ok) {
@@ -52,12 +61,15 @@ export default function RegisterPage() {
   const resetForm = () => {
     setName('');
     setEmail('');
+    setGender('');
+    setYear('');
+    setBatch('');
     setRegistered(false);
     setError('');
   };
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-6 bg-gray-100">
-      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+      <div className="w-full max-w-lg p-6 bg-white rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Event Registration</h1>
           <Link 
@@ -99,6 +111,58 @@ export default function RegisterPage() {
               <p className="mt-1 text-xs text-gray-500">
                 Each email can only be used once for registration
               </p>
+            </div>
+            
+            <div>
+              <label htmlFor="gender" className="block text-sm font-medium text-gray-700">Gender</label>
+              <select
+                id="gender"
+                value={gender}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => setGender(e.target.value)}
+                required
+              <select
+                id="gender"
+                value={gender}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => setGender(e.target.value)}
+                required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="year" className="block text-sm font-medium text-gray-700">Academic Year</label>
+              <select
+                id="year"
+                value={year}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => setYear(e.target.value)}
+                required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="">Select Year</option>
+                <option value="1">1st Year</option>
+                <option value="2">2nd Year</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="batch" className="block text-sm font-medium text-gray-700">Batch</label>
+              <select
+                id="batch"
+                value={batch}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => setBatch(e.target.value)}
+                required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="">Select Batch</option>
+                <option value="ramanujan">Ramanujan</option>
+                <option value="hopper">Hopper</option>
+                <option value="turing">Turing</option>
+                <option value="newmann">Newmann</option>
+              </select>
             </div>
             
             {error && (

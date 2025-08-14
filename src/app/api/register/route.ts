@@ -1,119 +1,179 @@
-import QRCode from 'qrcode';
-import crypto from 'crypto';
-import { NextResponse } from 'next/server';
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
-import path from 'path';
+'use client';
 
-// Initialize database connection
-let db: any = null;
+import { useState, FormEvent, ChangeEvent } from 'react';
+import Link from 'next/link';
 
-async function getDb() {
-  if (db) return db;
-  
-  // Use a persistent database file instead of in-memory
-  const dbPath = path.join(process.cwd(), 'event.db');
-  
-  db = await open({
-    filename: dbPath,
-    driver: sqlite3.Database
-  });
-  
-  // Create table if it doesn't exist
-  await db.exec(`CREATE TABLE IF NOT EXISTS attendees (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    email TEXT NOT NULL,
-    token TEXT UNIQUE NOT NULL,
-    checkedIn INTEGER DEFAULT 0,
-    registeredAt DATETIME DEFAULT CURRENT_TIMESTAMP
-  )`);
-  
-  return db;
-}
+export default function RegisterPage() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [gender, setGender] = useState('');
+  const [year, setYear] = useState('');
+  const [batch, setBatch] = useState('');
+  const [registered, setRegistered] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-interface RegistrationRequest {
-  name: string;
-  email: string;
-}
-
-export async function POST(req: Request) {
-  try {
-    const { name, email } = await req.json() as RegistrationRequest;
-    
-    if (!name || !email) {
-      return NextResponse.json({ error: 'Name and email are required' }, { status: 400 });
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json({ error: 'Please enter a valid email address' }, { status: 400 });
-    }
-
-    // Generate a secure random token
-    const token = crypto.randomBytes(16).toString('hex');
-    
-    // Get database connection
-    const database = await getDb();
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
     
     try {
-      // Check if email already exists
-      const existingUser = await database.get(
-        'SELECT email FROM attendees WHERE email = ?',
-        [email.toLowerCase()]
-      );
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          name, 
+          email, 
+          gender, 
+          year: parseInt(year), 
+          batch 
+        }),
+      });
       
-      if (existingUser) {
-        return NextResponse.json({ 
-          error: 'This email is already registered for the event' 
-        }, { status: 409 });
+      if (response.ok) {
+        // Registration successful - download will start automatically
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `event-ticket-${name.replace(/[^a-zA-Z0-9]/g, '-')}.png`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        setRegistered(true);
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || 'Registration failed');
       }
-      
-      // Save to DB with lowercase email for consistency
-      await database.run(
-        'INSERT INTO attendees (name, email, token, checkedIn) VALUES (?, ?, ?, 0)',
-        [name.trim(), email.toLowerCase(), token]
-      );
-    } catch (dbError: any) {
-      if (dbError.code === 'SQLITE_CONSTRAINT_UNIQUE') {
-        return NextResponse.json({ 
-          error: 'This email is already registered for the event' 
-        }, { status: 409 });
-      }
-      throw dbError;
+    } catch (err) {
+      setError('Failed to register. Please try again.');
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    // Create QR code with check-in URL
-    const checkInUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/checkin?t=${token}`;
-    
-    // Generate QR code as PNG buffer for download
-    const qrBuffer = await QRCode.toBuffer(checkInUrl, { 
-      type: 'png', 
-      width: 600,
-      margin: 2,
-      color: {
-        dark: '#000000',
-        light: '#FFFFFF'
-      }
-    });
-
-    // Return the QR code as a downloadable file
-    const fileName = `event-ticket-${name.replace(/[^a-zA-Z0-9]/g, '-')}.png`;
-    
-    return new NextResponse(qrBuffer, {
-      status: 200,
-      headers: {
-        'Content-Type': 'image/png',
-        'Content-Disposition': `attachment; filename="${fileName}"`,
-        'Content-Length': qrBuffer.length.toString(),
-      },
-    });
-  } catch (error) {
-    console.error('Registration error:', error);
-    return NextResponse.json(
-      { error: 'Failed to register attendee' },
-      { status: 500 }
-    );
-  }
+  const resetForm = () => {
+    setName('');
+    setEmail('');
+    setGender('');
+    setYear('');
+    setBatch('');
+    setRegistered(false);
+    setError('');
+  };
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center p-6 bg-gray-100">
+      <div className="w-full max-w-lg p-6 bg-white rounded-lg shadow-md">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold">Event Registration</h1>
+          <Link 
+            href="/" 
+            className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+          >
+            Back to Home
+          </Link>
+        </div>
+        
+        {!registered ? (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+              <input
+                type="text"
+                id="name"
+                value={name}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+                required
+                maxLength={100}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Enter your full name"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                required
+                maxLength={255}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Enter your email address"
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                Each email can only be used once for registration
+              </p>
+            </div>
+            
+            <div>
+              <label htmlFor="gender" className="block text-sm font-medium text-gray-700">Gender</label>
+              <select
+                id="gender"
+                value={gender}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => setGender(e.target.value)}
+                required
+            
+            {error && (
+              <div className="p-3 rounded-md bg-red-100 border border-red-300">
+                <p className="text-red-700 text-sm">{error}</p>
+              </div>
+            )}
+            
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+            >
+              {loading ? 'Registering...' : 'Register'}
+            </button>
+          </form>
+        ) : (
+          <div className="flex flex-col items-center">
+            <div className="mb-6 text-center">
+              <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h2 className="text-xl font-semibold text-green-600 mb-2">Registration Successful!</h2>
+              <p className="text-gray-600">Your QR code ticket has been downloaded automatically.</p>
+            </div>
+            
+            <div className="w-full p-4 bg-blue-50 rounded-lg mb-6">
+              <h3 className="font-medium text-blue-900 mb-2">Important Instructions:</h3>
+              <ul className="text-sm text-blue-800 space-y-1">
+                <li>• Check your Downloads folder for the QR code ticket</li>
+                <li>• Save the QR code image to your phone</li>
+                <li>• Bring the QR code to the event for check-in</li>
+                <li>• Each email can only register once</li>
+              </ul>
+            </div>
+            
+            <div className="flex space-x-4">
+              <button
+                onClick={resetForm}
+                className="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Register Another
+              </button>
+              <Link
+                href="/"
+                className="py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Back to Home
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+    </main>
+  );
 }
