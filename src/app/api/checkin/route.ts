@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
+import path from 'path';
 
 // Reuse the database connection function
 async function getDb() {
+  const dbPath = path.join(process.cwd(), 'event.db');
+  
   const db = await open({
-    filename: './event.db',
+    filename: dbPath,
     driver: sqlite3.Database
   });
   

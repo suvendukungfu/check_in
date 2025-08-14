@@ -4,19 +4,23 @@ const QRCode = require('qrcode');
 const { nanoid } = require('nanoid');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-// SQLite DB setup
-const db = new sqlite3.Database(':memory:');
+// SQLite DB setup - use persistent database
+const dbPath = path.join(__dirname, 'event-server.db');
+const db = new sqlite3.Database(dbPath);
+
 db.run(`CREATE TABLE attendees (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT,
-  email TEXT,
+  email TEXT UNIQUE,
   token TEXT UNIQUE,
-  checkedIn INTEGER DEFAULT 0
+  checkedIn INTEGER DEFAULT 0,
+  registeredAt DATETIME DEFAULT CURRENT_TIMESTAMP
 )`);
 
 // Registration endpoint
@@ -24,17 +28,32 @@ app.post('/register', async (req, res) => {
   const { name, email } = req.body;
   if (!name || !email) return res.status(400).json({ error: 'Missing fields' });
 
-  const token = nanoid(24);
-  db.run(`INSERT INTO attendees (name, email, token) VALUES (?, ?, ?)`,
-    [name, email, token], async function (err) {
-      if (err) return res.status(500).json({ error: err.message });
+  // Check if email already exists
+  db.get(`SELECT email FROM attendees WHERE email = ?`, [email.toLowerCase()], async (err, row) => {
+    if (err) return res.status(500).json({ error: err.message });
+    
+    if (row) {
+      return res.status(409).json({ error: 'This email is already registered for the event' });
+    }
 
-      const qrUrl = `https://localhost:3000/checkin?t=${token}`;
-      const qrImage = await QRCode.toBuffer(qrUrl, { type: 'png', width: 300 });
-      res.setHeader('Content-Disposition', `attachment; filename="ticket.png"`);
-      res.setHeader('Content-Type', 'image/png');
-      res.send(qrImage);
-    });
+    const token = nanoid(24);
+    db.run(`INSERT INTO attendees (name, email, token) VALUES (?, ?, ?)`,
+      [name.trim(), email.toLowerCase(), token], async function (err) {
+        if (err) {
+          if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+            return res.status(409).json({ error: 'This email is already registered for the event' });
+          }
+          return res.status(500).json({ error: err.message });
+        }
+
+        const qrUrl = `http://localhost:3000/checkin?t=${token}`;
+        const qrImage = await QRCode.toBuffer(qrUrl, { type: 'png', width: 600 });
+        const fileName = `event-ticket-${name.replace(/[^a-zA-Z0-9]/g, '-')}.png`;
+        res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+        res.setHeader('Content-Type', 'image/png');
+        res.send(qrImage);
+      });
+  });
 });
 
 // Check-in endpoint
