@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Event Check-in Scanner</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; }
+    video { width: 100%; max-width: 600px; border: 2px solid #333; }
+    h1 { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Scan Ticket</h1>
+  <video id="video" autoplay></video>
+  <script type="module">
+    import { BrowserQRCodeReader } from 'https://cdn.jsdelivr.net/npm/@zxing/browser@latest/+esm';
+
+    const codeReader = new BrowserQRCodeReader();
+    const videoElement = document.getElementById('video');
+
+    function speak(text) {
+      const utter = new SpeechSynthesisUtterance(text);
+      speechSynthesis.speak(utter);
+    }
+
+    async function startScanner() {
+      const devices = await BrowserQRCodeReader.listVideoInputDevices();
+      const selectedDeviceId = devices[0]?.deviceId;
+      codeReader.decodeFromVideoDevice(selectedDeviceId, videoElement, async (result, err) => {
+        if (result) {
+          const url = new URL(result.getText());
+          const token = url.searchParams.get('t');
+
+          const res = await fetch('http://localhost:4000/checkin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token })
+          }).then(r => r.json());
+
+          if (res.status === 'success') {
+            speak(`Welcome ${res.name}`);
+          } else if (res.status === 'already_scanned') {
+            speak(`Not that smart kiddo, already scanned`);
+          } else {
+            speak(`Sorry, but not registered`);
+          }
+        }
+      });
+    }
+
+    startScanner();
+  </script>
+</body>
+</html>
