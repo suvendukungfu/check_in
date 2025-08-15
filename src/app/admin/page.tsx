@@ -24,13 +24,22 @@ export default function AdminPage() {
       setLoading(true);
       const response = await fetch('/api/attendees');
       if (response.ok) {
-        const data = await response.json();
-        setAttendees(data);
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const data = await response.json();
+          setAttendees(data);
+        } else {
+          setError('Server returned unexpected response format. Please ensure the Express server is running.');
+        }
       } else {
         setError('Failed to fetch attendees');
       }
     } catch (err) {
-      setError('Error fetching attendees');
+      if (err instanceof Error && err.message.includes('Unexpected token')) {
+        setError('Backend server not responding with JSON. Please ensure the Express server is running on port 4000.');
+      } else {
+        setError('Error fetching attendees');
+      }
       console.error('Error fetching attendees:', err);
     } finally {
       setLoading(false);

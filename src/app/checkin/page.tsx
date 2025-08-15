@@ -91,7 +91,7 @@ export default function CheckinPage() {
             }
           }
           
-          if (error && !(error instanceof TypeError)) {
+          if (error && !(error instanceof TypeError) && error.name !== 'NotFoundException') {
             console.error('QR scanning error:', error);
           }
         }
