@@ -18,15 +18,26 @@ db.run(`CREATE TABLE attendees (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT,
   email TEXT UNIQUE,
+  gender TEXT,
+  year INTEGER,
+  batch TEXT,
   token TEXT UNIQUE,
   checkedIn INTEGER DEFAULT 0,
   registeredAt DATETIME DEFAULT CURRENT_TIMESTAMP
 )`);
 
+// Get all attendees endpoint
+app.get('/attendees', (req, res) => {
+  db.all(`SELECT id, name, email, gender, year, batch, checkedIn, registeredAt FROM attendees ORDER BY registeredAt DESC`, (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
 // Registration endpoint
 app.post('/register', async (req, res) => {
-  const { name, email } = req.body;
-  if (!name || !email) return res.status(400).json({ error: 'Missing fields' });
+  const { name, email, gender, year, batch } = req.body;
+  if (!name || !email || !gender || !year || !batch) return res.status(400).json({ error: 'Missing fields' });
 
   // Check if email already exists
   db.get(`SELECT email FROM attendees WHERE email = ?`, [email.toLowerCase()], async (err, row) => {
@@ -37,8 +48,8 @@ app.post('/register', async (req, res) => {
     }
 
     const token = nanoid(24);
-    db.run(`INSERT INTO attendees (name, email, token) VALUES (?, ?, ?)`,
-      [name.trim(), email.toLowerCase(), token], async function (err) {
+    db.run(`INSERT INTO attendees (name, email, gender, year, batch, token) VALUES (?, ?, ?, ?, ?, ?)`,
+      [name.trim(), email.toLowerCase(), gender, year, batch, token], async function (err) {
         if (err) {
           if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
             return res.status(409).json({ error: 'This email is already registered for the event' });
