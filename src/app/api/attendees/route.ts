@@ -1,26 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
   try {
-    const { data: attendees, error } = await supabase
-      .from('attendees')
-      .select('id, name, email, gender, year, batch, checked_in, registered_at')
-      .order('registered_at', { ascending: false });
-
-    if (error) {
-      console.error('Database error:', error);
-      return NextResponse.json(
-        { error: 'Failed to fetch attendees' },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json(attendees || []);
+    // Forward request to Express server
+    const response = await fetch('http://localhost:4000/attendees');
+    
+    const data = await response.json();
+    return NextResponse.json(data, { status: response.status });
   } catch (error) {
-    console.error('Attendees fetch error:', error);
+    console.error('Attendees fetch proxy error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to connect to attendees service' },
       { status: 500 }
     );
   }
