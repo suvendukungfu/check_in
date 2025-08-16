@@ -72,7 +72,7 @@ app.post('/register', async (req, res) => {
         }
         
         // Generate QR code
-        const qrUrl = `http://localhost:3000/checkin?t=${token}`;
+        const qrUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/checkin?t=${token}`;
         QRCode.toBuffer(qrUrl, { 
           type: 'png', 
           width: 600,

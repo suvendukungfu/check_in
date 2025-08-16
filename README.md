@@ -30,21 +30,28 @@ npm install
 
 ### Running the Application
 
-#### Express Server (Standalone)
+#### Running Both Servers (Recommended)
 
+```bash
+npm run start-all
+```
+
+This will start both the Express server (port 4000) and Next.js app (port 3000)
+
+#### Running Servers Separately
+
+**Express Server:**
 ```bash
 npm run server
 ```
 
-This will start the Express server at http://localhost:4000
-
-#### Next.js Application
+**Next.js Application:**
 
 ```bash
 npm run dev
 ```
 
-This will start the Next.js development server at http://localhost:3000
+**Note:** Both servers must be running for the application to work properly.
 
 ## Usage
 
@@ -57,6 +64,10 @@ This will start the Next.js development server at http://localhost:3000
    - Visit the check-in page at http://localhost:3000/checkin
    - Scan attendee QR codes
    - Receive audio and visual confirmation
+
+3. **Administration**:
+   - Visit the admin panel at http://localhost:3000/admin
+   - View all registered attendees and check-in statistics
 
 ## Technologies Used
 
