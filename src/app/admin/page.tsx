@@ -4,14 +4,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 interface Attendee {
-  id: number;
+  id: string;
   name: string;
   email: string;
   gender: string;
   year: number;
   batch: string;
-  checkedIn: boolean;
-  registeredAt: string;
+  checked_in: boolean;
+  registered_at: string;
 }
 
 export default function AdminPage() {
@@ -22,25 +22,21 @@ export default function AdminPage() {
   const fetchAttendees = async () => {
     try {
       setLoading(true);
+      setError('');
+      
       const response = await fetch('/api/attendees');
-      if (response.ok) {
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-          const data = await response.json();
-          setAttendees(data);
-        } else {
-          setError('Server returned unexpected response format. Please ensure the Express server is running.');
-        }
-      } else {
-        setError('Failed to fetch attendees');
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.error || 'Failed to fetch attendees');
+        return;
       }
+
+      const data = await response.json();
+      setAttendees(data);
     } catch (err) {
-      if (err instanceof Error && err.message.includes('Unexpected token')) {
-        setError('Backend server not responding with JSON. Please ensure the Express server is running on port 4000.');
-      } else {
-        setError('Error fetching attendees');
-      }
       console.error('Error fetching attendees:', err);
+      setError('Failed to connect to the server');
     } finally {
       setLoading(false);
     }
@@ -51,7 +47,7 @@ export default function AdminPage() {
   }, []);
 
   const totalRegistered = attendees.length;
-  const checkedIn = attendees.filter(a => a.checkedIn).length;
+  const checkedIn = attendees.filter(a => a.checked_in).length;
   const pending = totalRegistered - checkedIn;
 
   return (
@@ -62,9 +58,10 @@ export default function AdminPage() {
           <div className="flex space-x-4">
             <button
               onClick={fetchAttendees}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              disabled={loading}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
             >
-              Refresh
+              {loading ? 'Loading...' : 'Refresh'}
             </button>
             <Link
               href="/"
@@ -99,15 +96,35 @@ export default function AdminPage() {
           
           {loading ? (
             <div className="p-6 text-center">
-              <p className="text-gray-600">Loading attendees...</p>
+              <div className="inline-flex items-center">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <p className="text-gray-600">Loading attendees...</p>
+              </div>
             </div>
           ) : error ? (
             <div className="p-6 text-center">
-              <p className="text-red-600">{error}</p>
+              <div className="bg-red-50 border border-red-200 rounded-md p-4">
+                <p className="text-red-600 font-medium">{error}</p>
+                <button
+                  onClick={fetchAttendees}
+                  className="mt-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  Try Again
+                </button>
+              </div>
             </div>
           ) : attendees.length === 0 ? (
             <div className="p-6 text-center">
               <p className="text-gray-600">No attendees registered yet.</p>
+              <Link
+                href="/register"
+                className="mt-2 inline-block px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                Register First Attendee
+              </Link>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -125,7 +142,7 @@ export default function AdminPage() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {attendees.map((attendee) => (
-                    <tr key={attendee.id} className="hover:bg-gray-50">
+                    <tr key={attendee.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {attendee.name}
                       </td>
@@ -142,16 +159,22 @@ export default function AdminPage() {
                         {attendee.batch}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          attendee.checkedIn 
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full transition-colors ${
+                          attendee.checked_in 
                             ? 'bg-green-100 text-green-800' 
                             : 'bg-orange-100 text-orange-800'
                         }`}>
-                          {attendee.checkedIn ? 'Checked In' : 'Pending'}
+                          {attendee.checked_in ? 'Checked In' : 'Pending'}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(attendee.registeredAt).toLocaleDateString()}
+                        {new Date(attendee.registered_at).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
                       </td>
                     </tr>
                   ))}
