@@ -1,5 +1,8 @@
 import React, { useState, FormEvent, ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+import { nanoid } from 'nanoid';
+import QRCode from 'qrcode';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -17,40 +20,54 @@ export default function Register() {
     setError('');
     
     try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          name, 
-          email, 
-          gender, 
-          year: parseInt(year), 
-          batch 
-        }),
-      });
+      // Generate unique token
+      const token = nanoid(24);
       
-      if (response.ok) {
-        // Registration successful - download will start automatically
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `event-ticket-${name.replace(/[^a-zA-Z0-9]/g, '-')}.png`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-        
-        setRegistered(true);
-      } else {
-        const errorData = await response.json();
-        setError(errorData.error || 'Registration failed');
+      // Insert into Supabase
+      const { error: dbError } = await supabase
+        .from('attendees')
+        .insert({
+          name: name.trim(),
+          email: email.toLowerCase(),
+          gender,
+          year: parseInt(year),
+          batch,
+          token
+        });
+
+      if (dbError) {
+        if (dbError.code === '23505') { // Unique constraint violation
+          setError('This email is already registered for the event');
+        } else {
+          console.error('Database error:', dbError);
+          setError('Registration failed. Please try again.');
+        }
+        return;
       }
+
+      // Generate QR code
+      const qrUrl = `${window.location.origin}/checkin?t=${token}`;
+      const qrCodeDataUrl = await QRCode.toDataURL(qrUrl, {
+        width: 600,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      });
+
+      // Download QR code
+      const link = document.createElement('a');
+      link.href = qrCodeDataUrl;
+      link.download = `event-ticket-${name.replace(/[^a-zA-Z0-9]/g, '-')}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setRegistered(true);
     } catch (err) {
-      setError('Failed to register. Please try again.');
       console.error(err);
+      setError('Failed to register. Please try again.');
     } finally {
       setLoading(false);
     }

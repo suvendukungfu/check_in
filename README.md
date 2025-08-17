@@ -1,6 +1,6 @@
-# Event Check-in System - React Version
+# Event Check-in System - React + Supabase
 
-A complete event registration and check-in system with QR code functionality built with React.js and Vite.
+A complete event registration and check-in system with QR code functionality built with React.js, Vite, and Supabase.
 
 ## Features
 
@@ -9,13 +9,13 @@ A complete event registration and check-in system with QR code functionality bui
 - Check-in scanning via webcam with continuous scanning
 - Audio feedback for successful/failed check-ins
 - Admin panel with real-time statistics
-- SQLite database for storing attendee information
-- Express.js backend server
+- Supabase database for storing attendee information
+- Cloud-based data storage and real-time updates
 
 ## Project Structure
 
 - **React Frontend**: Modern React application with Vite build tool
-- **Express Backend**: Standalone server with SQLite database
+- **Supabase Backend**: Cloud database with real-time capabilities
 - **QR Code System**: Generation and scanning functionality
 
 ## Getting Started
@@ -23,6 +23,7 @@ A complete event registration and check-in system with QR code functionality bui
 ### Prerequisites
 
 - Node.js 16+ and npm
+- Supabase account and project
 
 ### Installation
 
@@ -33,27 +34,21 @@ npm install
 
 ### Running the Application
 
-#### Running Both Servers (Recommended)
+#### Setup Environment Variables
+
+1. Create a `.env` file in the root directory
+2. Add your Supabase credentials:
 
 ```bash
-npm run start-all
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-This will start both the Express server (port 4000) and React dev server (port 3000)
+#### Start Development Server
 
-#### Running Servers Separately
-
-**Express Server:**
-```bash
-npm run server
-```
-
-**React Development Server:**
 ```bash
 npm run dev
 ```
-
-**Note:** Both servers must be running for the application to work properly.
 
 ## Usage
 
@@ -78,21 +73,25 @@ npm run dev
 ## Technologies Used
 
 - **Frontend**: React.js, TypeScript, Vite, React Router, Tailwind CSS
-- **Backend**: Express.js, SQLite3, CORS
+- **Backend**: Supabase (PostgreSQL, Real-time, Auth)
 - **QR Codes**: QRCode library for generation, ZXing for scanning
 - **Audio**: Web Speech API for voice feedback
 
-## API Endpoints
+## Database Schema
 
-The React app communicates with the Express server through these endpoints:
+The Supabase database includes:
 
-- `POST /api/register` - Register new attendee
-- `POST /api/checkin` - Check in attendee
-- `GET /api/attendees` - Get all attendees (admin)
+- **attendees** table with fields: id, name, email, gender, year, batch, token, checked_in, registered_at
+- Row Level Security policies for public access
+- Indexes for optimal performance
 
 ## Development Notes
 
-- The Vite dev server proxies API calls to the Express server
+- All data is stored in Supabase cloud database
 - Camera permissions are required for QR code scanning
 - QR codes contain tokens that link to check-in URLs
-- SQLite database runs in-memory for development
+- Real-time updates available through Supabase subscriptions
+
+## Deployment
+
+This project is ready for deployment on platforms like Vercel, Netlify, or any static hosting service. Make sure to set your environment variables in your deployment platform.

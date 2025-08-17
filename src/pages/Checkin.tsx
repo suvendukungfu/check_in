@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserQRCodeReader, Result } from '@zxing/browser';
+import { supabase } from '../lib/supabase';
 
 export default function Checkin() {
   const [scanning, setScanning] = useState(false);
@@ -106,6 +107,54 @@ export default function Checkin() {
 
   const processCheckin = async (token: string) => {
     try {
+      // First, check if the attendee exists
+      const { data: attendee, error: fetchError } = await supabase
+        .from('attendees')
+        .select('*')
+        .eq('token', token)
+        .single();
+      
+      if (fetchError || !attendee) {
+        setMessage('Invalid or unregistered ticket');
+        setStatus('error');
+        speak('Invalid ticket');
+        return;
+      }
+      
+      if (attendee.checked_in) {
+        setMessage(`Already checked in: ${attendee.name}`);
+        setStatus('warning');
+        speak(`Already checked in ${attendee.name}`);
+        return;
+      }
+
+      // Update check-in status
+      const { error: updateError } = await supabase
+        .from('attendees')
+        .update({ checked_in: true })
+        .eq('token', token);
+
+      if (updateError) {
+        console.error('Update error:', updateError);
+        setMessage('Failed to process check-in');
+        setStatus('error');
+        return;
+      }
+
+      // Success
+      setScannedCount(prevCount => prevCount + 1);
+      setMessage(`Welcome, ${attendee.name}!`);
+      setStatus('success');
+      speak(`Welcome ${attendee.name}`);
+    } catch (error) {
+      console.error('Check-in error:', error);
+      setMessage('Failed to process check-in');
+      setStatus('error');
+    }
+  };
+
+  const processCheckinOld = async (token: string) => {
+    try {
       const response = await fetch('/api/checkin', {
         method: 'POST',
         headers: {
@@ -117,7 +166,6 @@ export default function Checkin() {
       const data = await response.json();
       
       if (data.status === 'success') {
-        // Increment the counter for successful check-ins
         setScannedCount(prevCount => prevCount + 1);
         setMessage(`Welcome, ${data.name}!`);
         setStatus('success');

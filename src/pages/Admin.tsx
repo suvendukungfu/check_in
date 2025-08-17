@@ -1,16 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-
-interface Attendee {
-  id: string;
-  name: string;
-  email: string;
-  gender: string;
-  year: number;
-  batch: string;
-  checked_in: boolean;
-  registered_at: string;
-}
+import { supabase, Attendee } from '../lib/supabase';
 
 export default function Admin() {
   const [attendees, setAttendees] = useState<Attendee[]>([]);
@@ -22,19 +12,21 @@ export default function Admin() {
       setLoading(true);
       setError('');
       
-      const response = await fetch('/api/attendees');
+      const { data, error: fetchError } = await supabase
+        .from('attendees')
+        .select('*')
+        .order('registered_at', { ascending: false });
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.error || 'Failed to fetch attendees');
+      if (fetchError) {
+        console.error('Error fetching attendees:', fetchError);
+        setError('Failed to fetch attendees');
         return;
       }
 
-      const data = await response.json();
-      setAttendees(data);
+      setAttendees(data || []);
     } catch (err) {
       console.error('Error fetching attendees:', err);
-      setError('Failed to connect to the server');
+      setError('Failed to fetch attendees');
     } finally {
       setLoading(false);
     }
