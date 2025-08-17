@@ -18,7 +18,6 @@
   ],
   "author": "",
   "license": "ISC",
-  "dependencies": {
     "@zxing/browser": "^0.1.5",
     "@supabase/supabase-js": "^2.39.0",
     "nanoid": "^5.1.5",
