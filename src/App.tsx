@@ -4,6 +4,8 @@ import Home from './pages/Home'
 import Register from './pages/Register'
 import Checkin from './pages/Checkin'
 import Admin from './pages/Admin'
+import AdminLogin from './pages/AdminLogin'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
   return (
@@ -11,7 +13,8 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/register" element={<Register />} />
       <Route path="/checkin" element={<Checkin />} />
-      <Route path="/admin" element={<Admin />} />
+      <Route path="/admin-login" element={<AdminLogin />} />
+      <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
     </Routes>
   )
 }
