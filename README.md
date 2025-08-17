@@ -1,19 +1,22 @@
-# Event Check-in System
+# Event Check-in System - React Version
 
-A complete event registration and check-in system with QR code functionality. This project includes both a standalone Express server and a Next.js application.
+A complete event registration and check-in system with QR code functionality built with React.js and Vite.
 
 ## Features
 
-- Attendee registration with name and email
-- QR code ticket generation
-- Check-in scanning via webcam
+- Attendee registration with name, email, gender, year, and batch
+- QR code ticket generation and download
+- Check-in scanning via webcam with continuous scanning
 - Audio feedback for successful/failed check-ins
+- Admin panel with real-time statistics
 - SQLite database for storing attendee information
+- Express.js backend server
 
 ## Project Structure
 
-- **Express Server**: Standalone server with in-memory SQLite database
-- **Next.js App**: Modern React application with server-side rendering
+- **React Frontend**: Modern React application with Vite build tool
+- **Express Backend**: Standalone server with SQLite database
+- **QR Code System**: Generation and scanning functionality
 
 ## Getting Started
 
@@ -36,7 +39,7 @@ npm install
 npm run start-all
 ```
 
-This will start both the Express server (port 4000) and Next.js app (port 3000)
+This will start both the Express server (port 4000) and React dev server (port 3000)
 
 #### Running Servers Separately
 
@@ -45,8 +48,7 @@ This will start both the Express server (port 4000) and Next.js app (port 3000)
 npm run server
 ```
 
-**Next.js Application:**
-
+**React Development Server:**
 ```bash
 npm run dev
 ```
@@ -56,24 +58,41 @@ npm run dev
 ## Usage
 
 1. **Registration**:
-   - Visit the registration page at http://localhost:3000
-   - Fill in name and email
-   - Receive a QR code ticket
+   - Visit http://localhost:3000
+   - Click "Go to Registration"
+   - Fill in all required fields (name, email, gender, year, batch)
+   - Download your QR code ticket automatically
 
 2. **Check-in**:
-   - Visit the check-in page at http://localhost:3000/checkin
-   - Scan attendee QR codes
+   - Visit http://localhost:3000/checkin
+   - Click "Start Scanning" to enable camera
+   - Scan attendee QR codes (supports continuous scanning)
    - Receive audio and visual confirmation
 
 3. **Administration**:
-   - Visit the admin panel at http://localhost:3000/admin
-   - View all registered attendees and check-in statistics
+   - Visit http://localhost:3000/admin
+   - View all registered attendees
+   - See real-time check-in statistics
+   - Refresh data as needed
 
 ## Technologies Used
 
-- Next.js for the frontend and API routes
-- Express for the standalone server
-- SQLite for database storage
-- QRCode for generating QR codes
-- ZXing for scanning QR codes
-- Tailwind CSS for styling
+- **Frontend**: React.js, TypeScript, Vite, React Router, Tailwind CSS
+- **Backend**: Express.js, SQLite3, CORS
+- **QR Codes**: QRCode library for generation, ZXing for scanning
+- **Audio**: Web Speech API for voice feedback
+
+## API Endpoints
+
+The React app communicates with the Express server through these endpoints:
+
+- `POST /api/register` - Register new attendee
+- `POST /api/checkin` - Check in attendee
+- `GET /api/attendees` - Get all attendees (admin)
+
+## Development Notes
+
+- The Vite dev server proxies API calls to the Express server
+- Camera permissions are required for QR code scanning
+- QR codes contain tokens that link to check-in URLs
+- SQLite database runs in-memory for development

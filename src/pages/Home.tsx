@@ -1,4 +1,5 @@
-import Link from 'next/link';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   return (
@@ -11,7 +12,7 @@ export default function Home() {
             <h2 className="text-xl font-semibold mb-2">Registration</h2>
             <p className="text-gray-600 mb-4">Register for the event and download your QR code ticket</p>
             <Link 
-              href="/register" 
+              to="/register" 
               className="block w-full text-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Go to Registration
@@ -22,7 +23,7 @@ export default function Home() {
             <h2 className="text-xl font-semibold mb-2">Check-in</h2>
             <p className="text-gray-600 mb-4">Scan QR codes to check in attendees</p>
             <Link 
-              href="/checkin" 
+              to="/checkin" 
               className="block w-full text-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
             >
               Go to Check-in
@@ -33,7 +34,7 @@ export default function Home() {
             <h2 className="text-xl font-semibold mb-2">Administration</h2>
             <p className="text-gray-600 mb-4">View all registered attendees and check-in statistics</p>
             <Link 
-              href="/admin" 
+              to="/admin" 
               className="block w-full text-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
             >
               Go to Admin Panel

@@ -1,9 +1,7 @@
-'use client';
+import React, { useState, FormEvent, ChangeEvent } from 'react';
+import { Link } from 'react-router-dom';
 
-import { useState, FormEvent, ChangeEvent } from 'react';
-import Link from 'next/link';
-
-export default function RegisterPage() {
+export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [gender, setGender] = useState('');
@@ -74,7 +72,7 @@ export default function RegisterPage() {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Event Registration</h1>
           <Link 
-            href="/" 
+            to="/" 
             className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
           >
             Back to Home
@@ -206,7 +204,7 @@ export default function RegisterPage() {
                 Register Another
               </button>
               <Link
-                href="/"
+                to="/"
                 className="py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 Back to Home

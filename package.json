@@ -1,18 +1,20 @@
 {
-  "name": "event-checkin",
+  "name": "event-checkin-react",
   "version": "1.0.0",
-  "description": "Event check-in system with QR code scanning",
+  "description": "Event check-in system with QR code scanning - React version",
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
     "server": "node server.js",
     "start-all": "node start-all.js"
   },
   "keywords": [
     "event",
     "check-in",
-    "qr-code"
+    "qr-code",
+    "react"
   ],
   "author": "",
   "license": "ISC",
@@ -21,11 +23,10 @@
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "nanoid": "^5.1.5",
-    "next": "^14.0.0",
     "qrcode": "^1.5.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "sqlite": "^5.1.1",
+    "react-router-dom": "^6.20.0",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
@@ -35,9 +36,11 @@
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.1.1",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.5",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "vite": "^5.0.0"
   }
 }

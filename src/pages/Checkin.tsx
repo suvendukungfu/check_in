@@ -1,9 +1,7 @@
-'use client';
-
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BrowserQRCodeReader, Result } from '@zxing/browser';
 
-export default function CheckinPage() {
+export default function Checkin() {
   const [scanning, setScanning] = useState(false);
   const [message, setMessage] = useState('');
   const [status, setStatus] = useState('');
@@ -28,7 +26,6 @@ export default function CheckinPage() {
       setScanning(true);
       setMessage('Scanning...');
       setStatus('');
-      // Don't reset the counter when restarting the scanner
       
       try {
         // First request camera permission explicitly
@@ -57,9 +54,6 @@ export default function CheckinPage() {
         videoRef.current || undefined,
         async (result: Result | null, error: Error | undefined) => {
           if (result) {
-            // Process the result without stopping the scanner
-            // This allows continuous scanning of multiple QR codes
-            
             try {
               const url = new URL(result.getText());
               const token = url.searchParams.get('t');
@@ -106,8 +100,6 @@ export default function CheckinPage() {
 
   const stopScanner = () => {
     if (codeReaderRef.current) {
-      // The reset() method doesn't exist in the actual implementation
-      // Instead, we just set scanning to false which will unmount the video element
       setScanning(false);
     }
   };

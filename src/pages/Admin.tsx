@@ -1,7 +1,5 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 interface Attendee {
   id: string;
@@ -14,7 +12,7 @@ interface Attendee {
   registered_at: string;
 }
 
-export default function AdminPage() {
+export default function Admin() {
   const [attendees, setAttendees] = useState<Attendee[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -64,7 +62,7 @@ export default function AdminPage() {
               {loading ? 'Loading...' : 'Refresh'}
             </button>
             <Link
-              href="/"
+              to="/"
               className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
             >
               Back to Home
@@ -120,7 +118,7 @@ export default function AdminPage() {
             <div className="p-6 text-center">
               <p className="text-gray-600">No attendees registered yet.</p>
               <Link
-                href="/register"
+                to="/register"
                 className="mt-2 inline-block px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 Register First Attendee
