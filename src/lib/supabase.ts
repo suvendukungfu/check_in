@@ -14,6 +14,7 @@ export interface Attendee {
   id: string
   name: string
   email: string
+  phone?: string
   gender: 'male' | 'female' | 'other'
   year: 1 | 2
   batch: 'ramanujan' | 'hopper' | 'turing' | 'newmann'

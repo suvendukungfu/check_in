@@ -160,6 +160,37 @@ body {
   .animate-blob {
     display: none;
   }
+
+  /* Make tables more compact on small screens */
+  .robotics-card table {
+    font-size: 0.8125rem;
+  }
+  .robotics-card th,
+  .robotics-card td {
+    padding: 0.375rem 0.5rem;
+    word-break: break-word;
+  }
+
+  /* Ensure modals fit on small screens */
+  .fixed.inset-0 .robotics-card {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  /* Constrain media elements */
+  .robotics-border video {
+    max-height: 50vh;
+    width: 100%;
+  }
+
+  /* Improve tap targets and prevent iOS zoom */
+  .robotics-card input,
+  .robotics-card select,
+  .robotics-card button,
+  .robotics-button {
+    min-height: 44px;
+    font-size: 16px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -179,5 +210,35 @@ body {
   .robotics-button {
     padding: 0.5rem 0.75rem;
     font-size: 0.75rem;
+  }
+
+  /* Extra compact tables on very small screens */
+  .robotics-card table {
+    font-size: 0.75rem;
+  }
+  .robotics-card th,
+  .robotics-card td {
+    padding: 0.25rem 0.375rem;
+  }
+
+  /* Reduce intensity of glow effects for performance */
+  .robotics-glow {
+    box-shadow: 0 0 10px rgba(var(--primary-color), 0.35);
+  }
+}
+
+@media (max-width: 360px) {
+  body {
+    font-size: 12px;
+  }
+
+  .robotics-title {
+    font-size: 1rem;
+    letter-spacing: 0.25px;
+  }
+
+  .robotics-button {
+    padding: 0.5rem 0.625rem;
+    font-size: 0.6875rem;
   }
 }
