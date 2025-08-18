@@ -51,14 +51,14 @@ export default function Checkin() {
       
       const selectedDeviceId = videoInputDevices[0]?.deviceId;
       
-      codeReaderRef.current.decodeFromVideoDevice(
+      await codeReaderRef.current.decodeFromVideoDevice(
         selectedDeviceId,
         videoRef.current || undefined,
         async (result: Result | null, error: Error | undefined) => {
           if (result) {
             try {
-              const url = new URL(result.getText());
-              const token = url.searchParams.get('t');
+              const tokenText = result.getText();
+              const token = extractTokenFromText(tokenText);
               
               if (!token) {
                 setMessage('Invalid QR code');
@@ -101,9 +101,18 @@ export default function Checkin() {
   };
 
   const stopScanner = () => {
-    if (codeReaderRef.current) {
-      setScanning(false);
-    }
+    // Best-effort stop for the current library version
+    try { (codeReaderRef.current as any)?.stopContinuousDecode?.(); } catch (e) {}
+    try { (codeReaderRef.current as any)?.reset?.(); } catch (e) {}
+    // Stop camera tracks if attached
+    try {
+      const stream = (videoRef.current as any)?.srcObject as MediaStream | undefined;
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        if (videoRef.current) (videoRef.current as HTMLVideoElement).srcObject = null;
+      }
+    } catch (e) {}
+    setScanning(false);
   };
 
   const processCheckin = async (token: string) => {
@@ -194,6 +203,28 @@ export default function Checkin() {
       const utterance = new SpeechSynthesisUtterance(text);
       speechSynthesis.speak(utterance);
     }
+  };
+
+  const extractTokenFromText = (text: string): string | null => {
+    try {
+      const url = new URL(text);
+      const fromQuery = url.searchParams.get('t');
+      if (fromQuery) return fromQuery;
+      if (url.hash) {
+        const hash = url.hash.startsWith('#') ? url.hash.slice(1) : url.hash;
+        const queryString = hash.includes('?') ? hash.substring(hash.indexOf('?') + 1) : '';
+        if (queryString) {
+          const params = new URLSearchParams(queryString);
+          const fromHash = params.get('t');
+          if (fromHash) return fromHash;
+        }
+      }
+    } catch (e) {
+      // Not a full URL, fall through
+    }
+    // If the QR directly encodes the token
+    if (/^[A-Za-z0-9_-]{10,}$/.test(text)) return text;
+    return null;
   };
 
   const statusClasses = {
