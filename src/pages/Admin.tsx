@@ -43,7 +43,7 @@ export default function Admin() {
       const { error: deleteError } = await supabase
         .from('attendees')
         .delete()
-        .neq('id', '0'); // This will delete all records
+        .gt('id', 0); // This will delete all records
       
       if (deleteError) {
         console.error('Error resetting data:', deleteError);
