@@ -7,6 +7,7 @@ import QRCode from 'qrcode';
 export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [gender, setGender] = useState('');
   const [year, setYear] = useState('');
   const [batch, setBatch] = useState('');
@@ -30,6 +31,7 @@ export default function Register() {
         .insert({
           name: name.trim(),
           email: email.toLowerCase(),
+          phone: phone.trim(),
           gender,
           year: parseInt(year),
           batch,
@@ -79,6 +81,7 @@ export default function Register() {
   const resetForm = () => {
     setName('');
     setEmail('');
+    setPhone('');
     setGender('');
     setYear('');
     setBatch('');
@@ -146,6 +149,21 @@ export default function Register() {
               </p>
             </div>
             
+            <div>
+              <label htmlFor="phone" className="block text-xs sm:text-sm font-medium text-white">Mobile Number</label>
+              <input
+                type="tel"
+                id="phone"
+                value={phone}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
+                required
+                maxLength={20}
+                pattern="[0-9()+\-\s]{7,20}"
+                className="mt-1 block w-full px-2 sm:px-3 py-1.5 sm:py-2 text-sm border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
+                placeholder="Enter your mobile number"
+              />
+            </div>
+
             <div>
               <label htmlFor="gender" className="block text-xs sm:text-sm font-medium text-white">Gender</label>
               <select
