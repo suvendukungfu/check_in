@@ -120,7 +120,7 @@ export default function Register() {
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
                 required
                 maxLength={100}
-                className="mt-1 block w-full px-3 py-2 border border-primary/30 bg-dark-surface/50 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
+                className="mt-1 block w-full px-3 py-2 border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
                 placeholder="Enter your full name"
               />
             </div>
@@ -134,7 +134,7 @@ export default function Register() {
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                 required
                 maxLength={255}
-                className="mt-1 block w-full px-3 py-2 border border-primary/30 bg-dark-surface/50 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
+                className="mt-1 block w-full px-3 py-2 border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
                 placeholder="Enter your email address"
               />
               <p className="mt-1 text-xs text-gray-300">
@@ -149,7 +149,7 @@ export default function Register() {
                 value={gender}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => setGender(e.target.value)}
                 required
-                className="mt-1 block w-full px-3 py-2 border border-primary/30 bg-dark-surface/50 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
+                className="mt-1 block w-full px-3 py-2 border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
               >
                 <option value="">Select Gender</option>
                 <option value="male">Male</option>
@@ -165,7 +165,7 @@ export default function Register() {
                 value={year}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => setYear(e.target.value)}
                 required
-                className="mt-1 block w-full px-3 py-2 border border-primary/30 bg-dark-surface/50 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
+                className="mt-1 block w-full px-3 py-2 border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
               >
                 <option value="">Select Year</option>
                 <option value="1">1st Year</option>
@@ -180,7 +180,7 @@ export default function Register() {
                 value={batch}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => setBatch(e.target.value)}
                 required
-                className="mt-1 block w-full px-3 py-2 border border-primary/30 bg-dark-surface/50 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
+                className="mt-1 block w-full px-3 py-2 border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
               >
                 <option value="">Select Batch</option>
                 <option value="ramanujan">Ramanujan</option>
