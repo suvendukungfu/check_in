@@ -24,23 +24,23 @@ export default function AdminLogin() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="px-6 py-8">
+    <main className="min-h-screen bg-gray-100 flex items-center justify-center p-3 sm:p-6">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-md overflow-hidden mx-2 sm:mx-0">
+        <div className="px-4 sm:px-6 py-6 sm:py-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Access</h1>
-            <p className="text-gray-600">Enter password to access admin panel</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Admin Access</h1>
+            <p className="text-sm sm:text-base text-gray-600">Enter password to access admin panel</p>
           </div>
 
           <form onSubmit={handleSubmit}>
             {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-md">
+              <div className="mb-4 p-2 sm:p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
                 {error}
               </div>
             )}
 
-            <div className="mb-6">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="mb-4 sm:mb-6">
+              <label htmlFor="password" className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
                 Password
               </label>
               <input
@@ -48,7 +48,7 @@ export default function AdminLogin() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Enter admin password"
                 required
               />
@@ -56,14 +56,14 @@ export default function AdminLogin() {
 
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
+              className="w-full bg-indigo-600 text-white py-2 px-3 sm:px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors text-sm sm:text-base"
             >
               Login
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <Link to="/" className="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+            <Link to="/" className="text-indigo-600 hover:text-indigo-800 text-xs sm:text-sm font-medium">
               Back to Home
             </Link>
           </div>
