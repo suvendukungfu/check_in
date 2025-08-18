@@ -10,6 +10,7 @@ export default function Register() {
   const [gender, setGender] = useState('');
   const [year, setYear] = useState('');
   const [batch, setBatch] = useState('');
+  const [interest, setInterest] = useState('');
   const [registered, setRegistered] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -32,6 +33,7 @@ export default function Register() {
           gender,
           year: parseInt(year),
           batch,
+          interest,
           token
         });
 
@@ -79,6 +81,7 @@ export default function Register() {
     setGender('');
     setYear('');
     setBatch('');
+    setInterest('');
     setRegistered(false);
     setError('');
   };
@@ -187,6 +190,32 @@ export default function Register() {
                 <option value="hopper">Hopper</option>
                 <option value="turing">Turing</option>
                 <option value="newmann">Newmann</option>
+              </select>
+            </div>
+            
+            <div>
+              <label htmlFor="interest" className="block text-sm font-medium text-white">Area of Interest</label>
+              <select
+                id="interest"
+                value={interest}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => setInterest(e.target.value)}
+                required
+                className="mt-1 block w-full px-3 py-2 border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
+              >
+                <option value="">Select Interest</option>
+                <option value="electronics">Electronics</option>
+                <option value="iot">IoT</option>
+                <option value="physics">Physics</option>
+                <option value="math">Math</option>
+                <option value="mechanics">Mechanics</option>
+                <option value="dev">Dev</option>
+                <option value="robotic operating system">Robotic Operating System</option>
+                <option value="astronomy">Astronomy</option>
+                <option value="content creation">Content Creation</option>
+                <option value="editor ppt">Editor PPT</option>
+                <option value="ai/ml developer">AI/ML Developer</option>
+                <option value="cool guys">Cool Guys</option>
+                <option value="others">Others</option>
               </select>
             </div>
             

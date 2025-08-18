@@ -17,6 +17,7 @@ export interface Attendee {
   gender: 'male' | 'female' | 'other'
   year: 1 | 2
   batch: 'ramanujan' | 'hopper' | 'turing' | 'newmann'
+  interest: 'electronics' | 'iot' | 'physics' | 'math' | 'mechanics' | 'dev' | 'robotic operating system' | 'astronomy' | 'content creation' | 'editor ppt' | 'ai/ml developer' | 'cool guys' | 'others'
   token: string
   checked_in: boolean
   registered_at: string
