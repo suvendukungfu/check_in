@@ -87,25 +87,25 @@ export default function Register() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-6 bg-gradient-to-br from-dark-surface to-card-bg relative overflow-hidden">
+    <main className="flex min-h-screen flex-col items-center justify-center p-3 sm:p-6 bg-gradient-to-br from-dark-surface to-card-bg relative overflow-hidden">
       {/* Circuit Pattern Background */}
       <div className="circuit-pattern absolute inset-0 opacity-10"></div>
       
       {/* Decorative Elements */}
-      <div className="absolute top-10 left-10 w-32 h-32 bg-accent opacity-20 rounded-full filter blur-3xl animate-blob"></div>
-      <div className="absolute bottom-10 right-10 w-32 h-32 bg-primary opacity-20 rounded-full filter blur-3xl animate-blob animation-delay-2000"></div>
-      <div className="absolute bottom-40 left-1/4 w-32 h-32 bg-secondary opacity-20 rounded-full filter blur-3xl animate-blob animation-delay-4000"></div>
+      <div className="hidden sm:block absolute top-10 left-10 w-32 h-32 bg-accent opacity-20 rounded-full filter blur-3xl animate-blob"></div>
+      <div className="hidden sm:block absolute bottom-10 right-10 w-32 h-32 bg-primary opacity-20 rounded-full filter blur-3xl animate-blob animation-delay-2000"></div>
+      <div className="hidden sm:block absolute bottom-40 left-1/4 w-32 h-32 bg-secondary opacity-20 rounded-full filter blur-3xl animate-blob animation-delay-4000"></div>
       
-      <div className="w-full max-w-lg p-6 robotics-card rounded-lg relative overflow-hidden z-10">
+      <div className="w-full max-w-lg p-4 sm:p-6 robotics-card rounded-lg relative overflow-hidden z-10 mx-2 sm:mx-0">
         <div className="tech-border"></div>
         <div className="relative z-10">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-white robotics-title glow-text">Robotics Club <span className="text-accent">Registration</span></h1>
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6 space-y-2 sm:space-y-0">
+          <h1 className="text-xl sm:text-2xl font-bold text-white robotics-title glow-text text-center sm:text-left">Robotics Club <span className="text-accent">Registration</span></h1>
           <Link 
             to="/" 
-            className="text-primary hover:text-primary/80 text-sm font-medium flex items-center transition-all duration-300"
+            className="text-primary hover:text-primary/80 text-xs sm:text-sm font-medium flex items-center transition-all duration-300"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 sm:h-4 sm:w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
             </svg>
             Back to Home
@@ -113,9 +113,9 @@ export default function Register() {
         </div>
         
         {!registered ? (
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-white">Full Name</label>
+              <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-white">Full Name</label>
               <input
                 type="text"
                 id="name"
@@ -123,13 +123,13 @@ export default function Register() {
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
                 required
                 maxLength={100}
-                className="mt-1 block w-full px-3 py-2 border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
+                className="mt-1 block w-full px-2 sm:px-3 py-1.5 sm:py-2 text-sm border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
                 placeholder="Enter your full name"
               />
             </div>
             
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-white">Email Address</label>
+              <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-white">Email Address</label>
               <input
                 type="email"
                 id="email"
@@ -137,22 +137,22 @@ export default function Register() {
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                 required
                 maxLength={255}
-                className="mt-1 block w-full px-3 py-2 border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
+                className="mt-1 block w-full px-2 sm:px-3 py-1.5 sm:py-2 text-sm border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
                 placeholder="Enter your email address"
               />
-              <p className="mt-1 text-xs text-gray-300">
+              <p className="mt-1 text-xs sm:text-xs text-gray-300">
                 Each email can only be used once for registration
               </p>
             </div>
             
             <div>
-              <label htmlFor="gender" className="block text-sm font-medium text-white">Gender</label>
+              <label htmlFor="gender" className="block text-xs sm:text-sm font-medium text-white">Gender</label>
               <select
                 id="gender"
                 value={gender}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => setGender(e.target.value)}
                 required
-                className="mt-1 block w-full px-3 py-2 border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
+                className="mt-1 block w-full px-2 sm:px-3 py-1.5 sm:py-2 text-sm border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
               >
                 <option value="">Select Gender</option>
                 <option value="male">Male</option>
@@ -162,13 +162,13 @@ export default function Register() {
             </div>
             
             <div>
-              <label htmlFor="year" className="block text-sm font-medium text-white">Academic Year</label>
+              <label htmlFor="year" className="block text-xs sm:text-sm font-medium text-white">Academic Year</label>
               <select
                 id="year"
                 value={year}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => setYear(e.target.value)}
                 required
-                className="mt-1 block w-full px-3 py-2 border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
+                className="mt-1 block w-full px-2 sm:px-3 py-1.5 sm:py-2 text-sm border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
               >
                 <option value="">Select Year</option>
                 <option value="1">1st Year</option>
@@ -177,13 +177,13 @@ export default function Register() {
             </div>
             
             <div>
-              <label htmlFor="batch" className="block text-sm font-medium text-white">Batch</label>
+              <label htmlFor="batch" className="block text-xs sm:text-sm font-medium text-white">Batch</label>
               <select
                 id="batch"
                 value={batch}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => setBatch(e.target.value)}
                 required
-                className="mt-1 block w-full px-3 py-2 border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
+                className="mt-1 block w-full px-2 sm:px-3 py-1.5 sm:py-2 text-sm border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
               >
                 <option value="">Select Batch</option>
                 <option value="ramanujan">Ramanujan</option>
@@ -194,13 +194,13 @@ export default function Register() {
             </div>
             
             <div>
-              <label htmlFor="interest" className="block text-sm font-medium text-white">Area of Interest</label>
+              <label htmlFor="interest" className="block text-xs sm:text-sm font-medium text-white">Area of Interest</label>
               <select
                 id="interest"
                 value={interest}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => setInterest(e.target.value)}
                 required
-                className="mt-1 block w-full px-3 py-2 border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
+                className="mt-1 block w-full px-2 sm:px-3 py-1.5 sm:py-2 text-sm border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
               >
                 <option value="">Select Interest</option>
                 <option value="electronics">Electronics</option>
@@ -220,15 +220,15 @@ export default function Register() {
             </div>
             
             {error && (
-              <div className="p-3 rounded-md bg-accent/20 border border-accent/30">
-                <p className="text-accent text-sm">{error}</p>
+              <div className="p-2 sm:p-3 rounded-md bg-accent/20 border border-accent/30">
+                <p className="text-accent text-xs sm:text-sm">{error}</p>
               </div>
             )}
             
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 disabled:opacity-50 transition-all duration-300 robotics-button"
+              className="w-full flex justify-center py-2 sm:py-2 px-3 sm:px-4 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-primary hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 disabled:opacity-50 transition-all duration-300 robotics-button"
             >
               {loading ? 'Registering...' : 'Register'}
             </button>
@@ -236,18 +236,18 @@ export default function Register() {
         ) : (
           <div className="flex flex-col items-center">
             <div className="mb-6 text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-secondary/20 rounded-full flex items-center justify-center border border-secondary/30">
-                <svg className="w-8 h-8 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 bg-secondary/20 rounded-full flex items-center justify-center border border-secondary/30">
+                <svg className="w-6 h-6 sm:w-8 sm:h-8 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h2 className="text-xl font-semibold text-secondary glow-text mb-2">Registration Successful!</h2>
-              <p className="text-gray-300">Your QR code ticket has been downloaded automatically.</p>
+              <h2 className="text-lg sm:text-xl font-semibold text-secondary glow-text mb-2">Registration Successful!</h2>
+              <p className="text-sm sm:text-base text-gray-300">Your QR code ticket has been downloaded automatically.</p>
             </div>
             
-            <div className="w-full p-4 bg-primary/20 rounded-lg mb-6 border border-primary/30">
-              <h3 className="font-medium text-primary mb-2">Important Instructions:</h3>
-              <ul className="text-sm text-gray-300 space-y-1">
+            <div className="w-full p-3 sm:p-4 bg-primary/20 rounded-lg mb-4 sm:mb-6 border border-primary/30">
+              <h3 className="text-sm sm:text-base font-medium text-primary mb-2">Important Instructions:</h3>
+              <ul className="text-xs sm:text-sm text-gray-300 space-y-1">
                 <li>• Check your Downloads folder for the QR code ticket</li>
                 <li>• Save the QR code image to your phone</li>
                 <li>• Bring the QR code to the event for check-in</li>
@@ -255,16 +255,16 @@ export default function Register() {
               </ul>
             </div>
             
-            <div className="flex space-x-4">
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
               <button
                 onClick={resetForm}
-                className="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 transition-all duration-300 robotics-button"
+                className="w-full sm:w-auto py-2 px-3 sm:px-4 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-primary hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 transition-all duration-300 robotics-button"
               >
                 Register Another
               </button>
               <Link
                 to="/"
-                className="py-2 px-4 border border-dark-surface/50 rounded-md shadow-sm text-sm font-medium text-white bg-dark-surface hover:bg-dark-surface/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-dark-surface/50 transition-all duration-300 robotics-button"
+                className="w-full sm:w-auto text-center py-2 px-3 sm:px-4 border border-dark-surface/50 rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-dark-surface hover:bg-dark-surface/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-dark-surface/50 transition-all duration-300 robotics-button"
               >
                 Back to Home
               </Link>
