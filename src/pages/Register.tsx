@@ -48,7 +48,8 @@ export default function Register() {
       }
 
       // Generate QR code
-      const qrUrl = `${window.location.origin}/checkin?t=${token}`;
+      const currentPath = window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/';
+      const qrUrl = `${window.location.origin}${currentPath}#/checkin?t=${token}`;
       const qrCodeDataUrl = await QRCode.toDataURL(qrUrl, {
         width: 600,
         margin: 2,
