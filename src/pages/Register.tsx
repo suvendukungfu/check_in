@@ -12,6 +12,7 @@ export default function Register() {
   const [year, setYear] = useState('');
   const [batch, setBatch] = useState('');
   const [interest, setInterest] = useState('');
+  const [registrationPassword, setRegistrationPassword] = useState('');
   const [registered, setRegistered] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -20,6 +21,13 @@ export default function Register() {
     e.preventDefault();
     setLoading(true);
     setError('');
+    
+    // Check registration password
+    if (registrationPassword !== 'register@workshop') {
+      setError('Invalid registration password');
+      setLoading(false);
+      return;
+    }
     
     try {
       // Generate unique token
@@ -86,6 +94,7 @@ export default function Register() {
     setYear('');
     setBatch('');
     setInterest('');
+    setRegistrationPassword('');
     setRegistered(false);
     setError('');
   };
@@ -236,6 +245,22 @@ export default function Register() {
                 <option value="cool guys">Cool Guys</option>
                 <option value="others">Others</option>
               </select>
+            </div>
+            
+            <div>
+              <label htmlFor="registrationPassword" className="block text-xs sm:text-sm font-medium text-white">Registration Password</label>
+              <input
+                type="password"
+                id="registrationPassword"
+                value={registrationPassword}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setRegistrationPassword(e.target.value)}
+                required
+                className="mt-1 block w-full px-2 sm:px-3 py-1.5 sm:py-2 text-sm border border-primary/30 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary transition-all duration-300"
+                placeholder="Enter registration password"
+              />
+              <p className="mt-1 text-xs sm:text-xs text-gray-300">
+                Contact organizers for the registration password
+              </p>
             </div>
             
             {error && (

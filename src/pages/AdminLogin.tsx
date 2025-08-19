@@ -9,7 +9,7 @@ export default function AdminLogin() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === 'admin1234') {
+    if (password === 'Admin@login') {
       // Set authentication in session storage
       sessionStorage.setItem('adminAuthenticated', 'true');
       setIsAuthenticated(true);
