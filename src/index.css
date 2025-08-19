@@ -151,11 +151,6 @@ body {
     font-size: 0.875rem;
   }
 
-  /* Hide decorative elements on mobile for better performance */
-  .circuit-pattern {
-    /* Keep visible a bit more to reduce "dull" look while staying subtle */
-    opacity: 0.12;
-  }
 
   /* Reduce blob animations on mobile */
   .animate-blob {
